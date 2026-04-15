@@ -53,7 +53,7 @@ button {
   color: #000000;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 180ms ease, background 180ms ease, opacity 180ms ease, border-color 180ms ease;
+  transition: transform 320ms ease, background 320ms ease, opacity 320ms ease, border-color 320ms ease;
 }
 
 button:hover {
@@ -85,7 +85,7 @@ input {
   background: #0e0e0e;
   color: #ffffff;
   outline: none;
-  transition: border-color 180ms ease, transform 180ms ease;
+  transition: border-color 320ms ease, transform 320ms ease;
 }
 
 input:focus {
@@ -139,7 +139,7 @@ label {
   width: min(100%, 420px);
   padding: 2rem;
   border-radius: 30px;
-  animation: rise 420ms ease;
+  animation: rise 760ms ease;
 }
 
 .gate-card h1,
@@ -182,7 +182,7 @@ label {
   align-self: start;
   padding: 1.1rem;
   border-radius: 30px;
-  animation: rise 500ms ease;
+  animation: rise 880ms ease;
 }
 
 .vault-panel h1 {
@@ -200,7 +200,7 @@ label {
   border-radius: 24px;
   padding: 1rem;
   text-align: left;
-  animation: rise 420ms ease;
+  animation: rise 760ms ease;
 }
 
 .set-button.active {
@@ -238,11 +238,11 @@ label {
   display: grid;
   place-items: center;
   text-align: center;
-  animation: rise 600ms ease;
+  animation: rise 980ms ease;
 }
 
 .study-shell {
-  animation: fadeIn 320ms ease;
+  animation: fadeIn 620ms ease;
 }
 
 .study-head {
@@ -273,7 +273,7 @@ label {
   min-width: 96px;
   padding: 0.75rem 0.95rem;
   border-radius: 22px;
-  animation: rise 600ms ease;
+  animation: rise 980ms ease;
 }
 
 .stat-pill span {
@@ -320,7 +320,7 @@ label {
   display: grid;
   gap: 1rem;
   align-content: space-between;
-  animation: cardIn 240ms ease;
+  animation: cardIn 520ms ease;
 }
 
 .card-face {
@@ -336,7 +336,7 @@ label {
   font-size: clamp(1.5rem, 3.4vw, 2.5rem);
   font-weight: 800;
   line-height: 1.15;
-  animation: pulseIn 260ms ease;
+  animation: pulseIn 560ms ease;
 }
 
 .card-button {
