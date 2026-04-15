@@ -54,6 +54,136 @@ const CATALOG_SETS = [
       { term: "What happened after more Earth movements in the sample story", definition: "The rock became so hot that it melted." },
       { term: "How the sample story ended", definition: "The melted rock was forced up through cracks, cooled and became a large piece of granite again." }
     ]
+  },
+  {
+    id: "rock-cycle-outstanding",
+    title: "Rock Cycle Outstanding",
+    subject: "Earth 1 Advanced",
+    description: "Immersive revision on how rocks form, how they are destroyed, chemical weathering, and compaction particle diagrams.",
+    immersive: true,
+    cards: [
+      {
+        term: "How igneous rock is made",
+        definition: "Igneous rock forms when magma cools and crystallises. Slow cooling underground forms large crystals like granite, while fast cooling at the surface forms small crystals like basalt.",
+        memoryCue: "I = ignition and cooling magma",
+        prompt: "Explain how igneous rock is made."
+      },
+      {
+        term: "How igneous rock is destroyed",
+        definition: "Igneous rock can be destroyed by weathering and erosion into sediment, changed by heat and pressure into metamorphic rock, or melted back into magma.",
+        memoryCue: "Weather, squeeze, or melt",
+        prompt: "How can igneous rock be destroyed in the rock cycle?"
+      },
+      {
+        term: "How sedimentary rock is made",
+        definition: "Sedimentary rock forms when weathered fragments are transported, deposited, compacted, and then cemented together.",
+        memoryCue: "Deposit, compact, cement",
+        prompt: "How is sedimentary rock made?"
+      },
+      {
+        term: "How sedimentary rock is destroyed",
+        definition: "Sedimentary rock can be weathered and eroded back into sediment, changed by heat and pressure into metamorphic rock, or dissolved by chemical weathering if it contains reactive minerals like calcium carbonate.",
+        memoryCue: "Break, squeeze, react",
+        prompt: "How is sedimentary rock destroyed?"
+      },
+      {
+        term: "How metamorphic rock is made",
+        definition: "Metamorphic rock forms when existing rock is changed by high heat and high pressure without melting.",
+        memoryCue: "Meta means changed",
+        prompt: "How is metamorphic rock made?"
+      },
+      {
+        term: "How metamorphic rock is destroyed",
+        definition: "Metamorphic rock can be weathered and eroded into sediment or melted into magma if temperatures become high enough.",
+        memoryCue: "Break down or melt",
+        prompt: "How is metamorphic rock destroyed?"
+      },
+      {
+        term: "How sediment is produced",
+        definition: "Sediment is produced when any rock is broken down by weathering and erosion into smaller fragments such as mud, sand, and shells.",
+        memoryCue: "Any rock can become sediment",
+        prompt: "How is sediment produced in the rock cycle?"
+      },
+      {
+        term: "How compaction works in particle terms",
+        definition: "In compaction, layers of sediment build up, pressing particles closer together so the gaps between them get smaller and the sediment becomes more tightly packed.",
+        memoryCue: "Same particles, less space",
+        prompt: "Explain compaction using an accurate particle diagram idea.",
+        visual: "compaction-particles"
+      },
+      {
+        term: "How cementation works",
+        definition: "In cementation, dissolved minerals are deposited in the gaps between sediment particles and stick the grains together into rock.",
+        memoryCue: "Minerals glue the grains",
+        prompt: "What happens during cementation?"
+      },
+      {
+        term: "Accurate particle diagram for compaction",
+        definition: "Before compaction, sediment particles are spread out with larger gaps. After compaction, the particles are still the same size but much closer together with fewer pore spaces.",
+        memoryCue: "Do not shrink particles, shrink the gaps",
+        prompt: "What must an accurate particle diagram for compaction show?"
+      },
+      {
+        term: "Chemical weathering",
+        definition: "Chemical weathering breaks down rock by chemical reactions that change the minerals in the rock, often involving weak acids in rainwater.",
+        memoryCue: "The minerals change, not just the shape",
+        prompt: "Define chemical weathering."
+      },
+      {
+        term: "Acid rain formation word equation",
+        definition: "Carbon dioxide + water -> carbonic acid.",
+        memoryCue: "Gas plus rain makes weak acid",
+        prompt: "What is the word equation for carbonic acid formation?"
+      },
+      {
+        term: "Acid rain formation symbol equation",
+        definition: "CO2 + H2O -> H2CO3.",
+        memoryCue: "CO2 + H2O = H2CO3",
+        prompt: "What is the symbol equation for carbonic acid formation?"
+      },
+      {
+        term: "Limestone chemical weathering word equation",
+        definition: "Calcium carbonate + acid -> calcium salt + water + carbon dioxide.",
+        memoryCue: "Carbonate plus acid fizzes",
+        prompt: "What is the word equation for chemical weathering of limestone?"
+      },
+      {
+        term: "Limestone chemical weathering symbol equation",
+        definition: "CaCO3 + 2HCl -> CaCl2 + H2O + CO2.",
+        memoryCue: "Carbonate plus acid gives salt, water, gas",
+        prompt: "What is the symbol equation for limestone reacting with hydrochloric acid?"
+      },
+      {
+        term: "Why limestone is vulnerable",
+        definition: "Limestone contains calcium carbonate, which reacts with acids during chemical weathering and slowly dissolves.",
+        memoryCue: "Calcium carbonate is reactive",
+        prompt: "Why is limestone especially affected by chemical weathering?"
+      },
+      {
+        term: "Destructive pathway from granite to sediment",
+        definition: "Granite can be broken down by weathering, including freeze-thaw weathering, then eroded and transported as sediment.",
+        memoryCue: "Granite cracks, then travels",
+        prompt: "Describe how granite can become sediment."
+      },
+      {
+        term: "Destructive pathway from sedimentary to magma",
+        definition: "Sedimentary rock can be buried, changed by heat and pressure into metamorphic rock, and then melted into magma.",
+        memoryCue: "Burial, squeeze, melt",
+        prompt: "How can sedimentary rock eventually become magma?"
+      },
+      {
+        term: "Full rock cycle chain",
+        definition: "Weathering and erosion produce sediment, deposition places it, compaction and cementation make sedimentary rock, heat and pressure make metamorphic rock, melting makes magma, and cooling makes igneous rock.",
+        memoryCue: "Break, drop, pack, squeeze, melt, cool",
+        prompt: "Give the full chain through the rock cycle."
+      },
+      {
+        term: "Best explanation of compaction in one sentence",
+        definition: "Compaction is the process where layers of sediment press down on lower layers so the particles become closer together and pore spaces decrease.",
+        memoryCue: "Pressure closes spaces",
+        prompt: "Give a strong one-sentence definition of compaction."
+      }
+    ]
   }
 ];
 
@@ -227,11 +357,12 @@ function renderFlashcardCard(card, set) {
   const text = reviseState.flipped ? card.definition : card.term;
 
   elements.studyContent.innerHTML = `
-    <section class="study-card">
+    <section class="study-card ${set.immersive ? "study-card-immersive" : ""}">
       <div>
         <p class="eyebrow">${label}</p>
         <button id="flashcardFace" class="card-face card-button" type="button">${escapeHtml(text)}</button>
       </div>
+      ${renderCardSupport(card, set, "flashcard")}
       <p class="subtle-copy">Click the card to flip it, then continue to answer the quiz for this card.</p>
       <div class="card-actions">
         <button id="prevButton" class="secondary" ${reviseState.index === 0 ? "disabled" : ""}>Previous</button>
@@ -260,11 +391,12 @@ function renderFlashcardCard(card, set) {
 
 function renderQuizCard(card, set) {
   elements.studyContent.innerHTML = `
-    <section class="study-card">
+    <section class="study-card ${set.immersive ? "study-card-immersive" : ""}">
       <div>
         <p class="eyebrow">Type the answer</p>
-        <div class="card-face">${escapeHtml(card.term)}</div>
+        <div class="card-face">${escapeHtml(card.prompt || card.term)}</div>
       </div>
+      ${renderCardSupport(card, set, "quiz")}
       <label>
         Your answer
         <input id="answerInput" type="text" placeholder="Type here">
@@ -362,6 +494,47 @@ function renderSummary(set) {
     resetReviseState();
     renderStudyArea();
   });
+}
+
+function renderCardSupport(card, set, stage) {
+  const parts = [];
+
+  if (set.immersive && card.memoryCue) {
+    parts.push(`
+      <div class="memory-strip">
+        <span class="memory-chip">Memorise</span>
+        <p>${escapeHtml(card.memoryCue)}</p>
+      </div>
+    `);
+  }
+
+  if (card.visual === "compaction-particles") {
+    parts.push(`
+      <div class="diagram-panel">
+        <div class="diagram-block">
+          <p class="diagram-title">Before compaction</p>
+          <div class="particle-grid loose">
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="diagram-arrow">-></div>
+        <div class="diagram-block">
+          <p class="diagram-title">After compaction</p>
+          <div class="particle-grid tight">
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    `);
+  }
+
+  if (stage === "quiz" && set.immersive) {
+    parts.push(`<p class="subtle-copy strong-copy">Use full rock-cycle vocabulary. Short, accurate answers score best.</p>`);
+  }
+
+  return parts.join("");
 }
 
 function recordSession(setId, percent) {
