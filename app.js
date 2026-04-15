@@ -59,7 +59,7 @@ const CATALOG_SETS = [
     id: "rock-cycle-outstanding",
     title: "Rock Cycle Outstanding",
     subject: "Earth 1 Advanced",
-    description: "Immersive revision on how rocks form, how they are destroyed, chemical weathering, and compaction particle diagrams.",
+    description: "A memory trainer for rock formation and destruction, chemical weathering, equations, and accurate compaction particle diagrams.",
     immersive: true,
     cards: [
       {
@@ -97,12 +97,6 @@ const CATALOG_SETS = [
         definition: "Metamorphic rock can be weathered and eroded into sediment or melted into magma if temperatures become high enough.",
         memoryCue: "Break down or melt",
         prompt: "How is metamorphic rock destroyed?"
-      },
-      {
-        term: "How sediment is produced",
-        definition: "Sediment is produced when any rock is broken down by weathering and erosion into smaller fragments such as mud, sand, and shells.",
-        memoryCue: "Any rock can become sediment",
-        prompt: "How is sediment produced in the rock cycle?"
       },
       {
         term: "How compaction works in particle terms",
@@ -160,24 +154,6 @@ const CATALOG_SETS = [
         prompt: "Why is limestone especially affected by chemical weathering?"
       },
       {
-        term: "Destructive pathway from granite to sediment",
-        definition: "Granite can be broken down by weathering, including freeze-thaw weathering, then eroded and transported as sediment.",
-        memoryCue: "Granite cracks, then travels",
-        prompt: "Describe how granite can become sediment."
-      },
-      {
-        term: "Destructive pathway from sedimentary to magma",
-        definition: "Sedimentary rock can be buried, changed by heat and pressure into metamorphic rock, and then melted into magma.",
-        memoryCue: "Burial, squeeze, melt",
-        prompt: "How can sedimentary rock eventually become magma?"
-      },
-      {
-        term: "Full rock cycle chain",
-        definition: "Weathering and erosion produce sediment, deposition places it, compaction and cementation make sedimentary rock, heat and pressure make metamorphic rock, melting makes magma, and cooling makes igneous rock.",
-        memoryCue: "Break, drop, pack, squeeze, melt, cool",
-        prompt: "Give the full chain through the rock cycle."
-      },
-      {
         term: "Best explanation of compaction in one sentence",
         definition: "Compaction is the process where layers of sediment press down on lower layers so the particles become closer together and pore spaces decrease.",
         memoryCue: "Pressure closes spaces",
@@ -212,10 +188,14 @@ const reviseState = {
   index: 0,
   stage: "flashcard",
   flipped: false,
+  reveal: false,
   score: 0,
   answerFeedback: "",
   answerFeedbackClass: "",
-  sessionRecorded: false
+  sessionRecorded: false,
+  queue: [],
+  mastery: {},
+  masteredCount: 0
 };
 
 let confettiState = {
@@ -339,6 +319,11 @@ function renderStudyArea() {
   elements.studyShell.classList.remove("hidden");
   elements.studyTitle.textContent = set.title;
 
+  if (set.immersive) {
+    renderImmersiveStudy(set);
+    return;
+  }
+
   const card = set.cards[reviseState.index];
   if (!card) {
     renderSummary(set);
@@ -350,6 +335,60 @@ function renderStudyArea() {
 
   if (reviseState.stage === "flashcard") renderFlashcardCard(card, set);
   if (reviseState.stage === "quiz") renderQuizCard(card, set);
+}
+
+function renderImmersiveStudy(set) {
+  ensureImmersiveQueue(set);
+
+  if (!reviseState.queue.length) {
+    renderImmersiveSummary(set);
+    return;
+  }
+
+  const currentIndex = reviseState.queue[0];
+  const card = set.cards[currentIndex];
+  const currentLevel = reviseState.mastery[currentIndex] || 0;
+  elements.studyStep.textContent = reviseState.reveal ? "Lock It In" : "Remember";
+  elements.studyProgress.textContent = `${reviseState.masteredCount} / ${set.cards.length} mastered`;
+
+  elements.studyContent.innerHTML = `
+    <section class="study-card study-card-immersive">
+      <div>
+        <p class="eyebrow">${reviseState.reveal ? "Remember this exactly" : "Try to recall"}</p>
+        <div class="card-face">${escapeHtml(reviseState.reveal ? card.definition : (card.prompt || card.term))}</div>
+      </div>
+      ${renderCardSupport(card, set, reviseState.reveal ? "reveal" : "focus")}
+      <div class="memory-status">
+        <span class="memory-chip">Mastery ${currentLevel}/2</span>
+        <p>${reviseState.reveal ? "Mark whether this answer is locked in or needs to come back again." : "Say the answer out loud first, then reveal it."}</p>
+      </div>
+      <div class="card-actions">
+        ${reviseState.reveal
+          ? '<button id="lockInButton">Locked in</button><button id="againButton" class="secondary">Again later</button>'
+          : '<button id="revealButton">Reveal answer</button><button id="peekDiagramButton" class="secondary">Show support</button>'}
+      </div>
+    </section>
+  `;
+
+  if (!reviseState.reveal) {
+    document.getElementById("revealButton").addEventListener("click", () => {
+      reviseState.reveal = true;
+      renderStudyArea();
+    });
+    document.getElementById("peekDiagramButton").addEventListener("click", () => {
+      reviseState.reveal = true;
+      renderStudyArea();
+    });
+    return;
+  }
+
+  document.getElementById("lockInButton").addEventListener("click", () => {
+    handleImmersiveRating(set, currentIndex, true);
+  });
+
+  document.getElementById("againButton").addEventListener("click", () => {
+    handleImmersiveRating(set, currentIndex, false);
+  });
 }
 
 function renderFlashcardCard(card, set) {
@@ -496,6 +535,37 @@ function renderSummary(set) {
   });
 }
 
+function renderImmersiveSummary(set) {
+  const percent = 100;
+  recordSession(set.id, percent);
+  elements.studyStep.textContent = "Mastered";
+  elements.studyProgress.textContent = `${set.cards.length} / ${set.cards.length} mastered`;
+  elements.studyContent.innerHTML = `
+    <div class="summary-grid">
+      <div class="summary-card">
+        <strong>${set.cards.length}</strong>
+        <p>Concepts locked in</p>
+      </div>
+      <div class="summary-card">
+        <strong>2x</strong>
+        <p>Needed twice correct to clear</p>
+      </div>
+      <div class="summary-card">
+        <strong>100%</strong>
+        <p>Memory cycle complete</p>
+      </div>
+    </div>
+    <div class="summary-actions">
+      <button id="restartButton">Restart Memory Set</button>
+    </div>
+  `;
+
+  document.getElementById("restartButton").addEventListener("click", () => {
+    resetReviseState();
+    renderStudyArea();
+  });
+}
+
 function renderCardSupport(card, set, stage) {
   const parts = [];
 
@@ -534,6 +604,10 @@ function renderCardSupport(card, set, stage) {
     parts.push(`<p class="subtle-copy strong-copy">Use full rock-cycle vocabulary. Short, accurate answers score best.</p>`);
   }
 
+  if (stage === "focus" && set.immersive) {
+    parts.push(`<p class="subtle-copy strong-copy">Do not read the answer yet. Try to say it from memory first.</p>`);
+  }
+
   return parts.join("");
 }
 
@@ -552,10 +626,43 @@ function resetReviseState() {
   reviseState.index = 0;
   reviseState.stage = "flashcard";
   reviseState.flipped = false;
+  reviseState.reveal = false;
   reviseState.score = 0;
   reviseState.answerFeedback = "";
   reviseState.answerFeedbackClass = "";
   reviseState.sessionRecorded = false;
+  reviseState.queue = [];
+  reviseState.mastery = {};
+  reviseState.masteredCount = 0;
+}
+
+function ensureImmersiveQueue(set) {
+  if (reviseState.queue.length || reviseState.masteredCount) return;
+  reviseState.queue = set.cards.map((_, index) => index);
+  reviseState.mastery = Object.fromEntries(set.cards.map((_, index) => [index, 0]));
+}
+
+function handleImmersiveRating(set, currentIndex, lockedIn) {
+  const nextQueue = [...reviseState.queue];
+  nextQueue.shift();
+
+  if (lockedIn) {
+    const nextLevel = Math.min((reviseState.mastery[currentIndex] || 0) + 1, 2);
+    reviseState.mastery[currentIndex] = nextLevel;
+    if (nextLevel >= 2) {
+      reviseState.masteredCount += 1;
+      burstConfetti();
+    } else {
+      nextQueue.push(currentIndex);
+    }
+  } else {
+    reviseState.mastery[currentIndex] = 0;
+    nextQueue.push(currentIndex);
+  }
+
+  reviseState.queue = nextQueue;
+  reviseState.reveal = false;
+  renderStudyArea();
 }
 
 function setupConfetti() {
